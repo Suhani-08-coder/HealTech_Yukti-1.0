@@ -14,7 +14,6 @@ MindEase is a comprehensive web application designed to make mental wellness acc
 
 * **🤖 AI Companion:** A compassionate, non-judgmental chatbot powered by **Google Gemini-Flash-latest**. It acts as a supportive listener for users needing to vent or seek grounding techniques.
 * **📝 Smart Wellness Quiz:** An interactive assessment that evaluates the user's emotional state. The AI analyzes the results to provide personalized, gentle advice.
-* **📍 Sanctuary Locator:** users find real-world meditation centers, yoga studios, and quiet parks nearby.
 * **🌊 Digital Sanctuary:** A curated library of visual therapy (nature videos) and sonic healing (binaural beats, rain sounds) to reduce anxiety.
 * **🔐 Secure & Private:** Passwordless authentication using **Email OTP** (One-Time Password) to ensure user accounts remain secure.
 
