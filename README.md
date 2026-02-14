@@ -1,7 +1,7 @@
 # HealTech_Yukti-1.0
-MindEase: An AI-powered mental wellness sanctuary. Features a compassionate AI companion, mood tracking, relaxation resources, and a meditation center locator. Built with Python (Flask) and Google Gemini API.
+MindEase: An AI-powered mental wellness sanctuary. Features a compassionate AI companion, mood tracking, relaxation resources. Built with Python (Flask) and Google Gemini API.
 # MindEase_YuktiProject
-MindEase: An AI-powered mental wellness sanctuary. Features a compassionate AI companion, mood tracking, relaxation resources, and a meditation center locator. Built with Python (Flask) and Google Gemini API.
+MindEase: An AI-powered mental wellness sanctuary. Features a compassionate AI companion, mood tracking, relaxation resources. Built with Python (Flask) and Google Gemini API.
 # 🌿 MindEase - AI-Powered Mental Wellness Sanctuary
 
 ![MindEase Banner](https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=1200&auto=format&fit=crop)
