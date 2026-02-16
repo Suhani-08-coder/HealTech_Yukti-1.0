@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Bubble Wrap - MindEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1476610182048-b716b8518aae?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+            margin: 0;
+            display: flex;
+            font-family: 'Lato', sans-serif;
+        }
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            z-index: -1;
+        }
+        /* Sidebar Styling */
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0;
+            height: 100vh; width: 220px;
+            display: flex; flex-direction: column;
+            padding: 30px 20px;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-icon { width: 100%; display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: rgba(255, 255, 255, 0.6); font-size: 1.1rem; margin-bottom: 10px; transition: 0.3s; text-decoration: none; border-radius: 12px; }
+        .nav-icon:hover, .nav-icon.active { background: rgba(255, 255, 255, 0.15); color: white; }
+        
+        /* Centering the Content Area */
+        .content-area { 
+            margin-left: 220px; /* Sidebar space */
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .bubble-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 550px; /* Fixed size box */
+            width: 100%;
+        }
+
+        .bubble-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+            justify-items: center;
+        }
+
+        .bubble {
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.3), -2px -2px 6px rgba(255,255,255,0.05);
+            transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s ease;
+        }
+
+        .bubble.popped {
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.4), inset -2px -2px 6px rgba(255,255,255,0.05);
+            transform: scale(0.92);
+            cursor: default;
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 24px;
+            border-radius: 20px;
+            transition: 0.3s;
+            margin-bottom: 10px;
+        }
+        .btn-reset:hover { background: rgba(255, 255, 255, 0.2); border-color: white; }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <nav class="sidebar">
+        <a href="Welcome.html" class="nav-brand flex items-center gap-3 mb-10 pl-2 no-underline">
+            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold text-xl">M</div>
+            <span class="font-serif text-xl text-white tracking-wider">MindEase</span>
+        </a>
+        <a href="Welcome.html" class="nav-icon"><i>○</i><span>Home</span></a>
+        <a href="relax.html" class="nav-icon active"><i>△</i><span>Back to Relax</span></a>
+        <div class="mt-auto w-full">
+            <button onclick="createWrap()" class="nav-icon w-full text-left text-teal-300"><i>↻</i><span>Reset Wrap</span></button>
+        </div>
+    </nav>
+
+    <div class="content-area">
+        <div class="bubble-container">
+            <h1 class="text-3xl font-serif mb-2">Bubble Wrap</h1>
+            <p class="text-slate-400 font-light italic mb-6">Experience the pop of tranquility.</p>
+            
+            <button onclick="createWrap()" class="btn-reset text-sm font-medium">Clear Board</button>
+            <div id="bubble-grid" class="bubble-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('bubble-grid');
+        const bubbleCount = 64; 
+
+        function createWrap() {
+            grid.innerHTML = '';
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                bubble.addEventListener('click', () => {
+                    if (!bubble.classList.contains('popped')) {
+                        const hue = Math.floor(Math.random() * 360);
+                        const pastel = `hsl(${hue}, 70%, 85%)`;
+                        
+                        bubble.style.background = pastel;
+                        bubble.classList.add('popped');
+                        
+                        bubble.style.transform = "scale(0.85)";
+                        setTimeout(() => bubble.style.transform = "scale(0.92)", 100);
+                        
+                        playPopSound();
+                    }
+                });
+                grid.appendChild(bubble);
+            }
+        }
+
+        function playPopSound() {
+            const audio = new Audio('audio/soundreality-pop-sound-423716.mp3');
+            audio.volume = 0.2;
+            audio.play();
+        }
+
+        createWrap();
+    </script>
+</body>
+</html>
