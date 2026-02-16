@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindEase - Mood Check-In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1476610182048-b716b8518aae?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            margin: 0;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            z-index: -1;
+        }
+        
+        /* Sidebar Styling - Original Subtle Look */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 30px 20px;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-brand { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 50px; 
+            text-decoration: none; 
+            padding-left: 10px; 
+        }
+        
+        .nav-logo { 
+            width: 40px; 
+            height: 40px; 
+            background: white; 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 1.2rem; 
+            color: #1e293b; 
+            font-weight: bold; 
+        }
+        
+        .brand-name { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 1.2rem; 
+            color: white; 
+            letter-spacing: 1px; 
+        }
+        
+        .nav-icon { 
+            width: 100%; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            padding: 12px 15px; 
+            color: rgba(255, 255, 255, 0.6); 
+            font-size: 1.1rem; 
+            margin-bottom: 10px; 
+            transition: all 0.3s; 
+            text-decoration: none; 
+            border-radius: 12px; 
+        }
+        
+        .nav-icon:hover, .nav-icon.active { 
+            background: rgba(255, 255, 255, 0.15); 
+            color: white; 
+        }
+
+        .content-area { 
+            margin-left: 220px; 
+            padding: 60px 80px; 
+            max-width: 1200px; 
+        }
+
+        /* Glass Container for Quiz */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            margin-top: 20px;
+        }
+
+        .option-btn { 
+            width: 100%; 
+            text-align: left; 
+            padding: 18px; 
+            margin-top: 12px; 
+            border-radius: 14px; 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: white;
+            transition: 0.3s; 
+            cursor: pointer;
+        }
+
+        .option-btn:hover { 
+            background: rgba(255,255,255,0.15); 
+            border-color: rgba(255,255,255,0.4); 
+        }
+
+        .option-btn.selected { 
+            background: rgba(255, 255, 255, 0.25); 
+            border-color: white; 
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <nav class="sidebar">
+        <a href="Welcome.html" class="nav-brand">
+            <div class="nav-logo">M</div>
+            <span class="brand-name">MindEase</span>
+        </a>
+        <a href="Welcome.html" class="nav-icon">○ <span>Home</span></a>
+        <a href="relax.html" class="nav-icon">△ <span> Go To Relax</span></a>
+        <a href="quiz.html" class="nav-icon active">□ <span>Mood Quiz</span></a>
+    </nav>
+
+    <div class="content-area">
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-serif italic mb-2 tracking-wide">Easy Mood Check-In</h1>
+            <p class="text-slate-400 font-light italic">Bhai, thoda rest karein aur batayein aap kaisa feel kar rahe hain.</p>
+        </header>
+
+        <div id="quiz-box" class="glass-card max-w-2xl mx-auto">
+            <div id="question-container">
+                <h3 class="text-xl font-serif mb-6" id="q-text">1. The Weather Report: Aapke dimaag mein mausam kaisa hai?</h3>
+                <div id="options-list">
+                    <button class="option-btn" onclick="nextStep(1)">☀️ Sunny: Feeling bright and energized</button>
+                    <button class="option-btn" onclick="nextStep(2)">🌤️ Partly Cloudy: Mostly okay</button>
+                    <button class="option-btn" onclick="nextStep(3)">🌧️ Rainy: Feeling low or heavy</button>
+                    <button class="option-btn" onclick="nextStep(4)">⚡ Stormy: Stressed or overwhelmed</button>
+                </div>
+            </div>
+
+            <div id="result-area" class="hidden text-center">
+                <div id="zone-tag" class="inline-block px-5 py-1 rounded-full text-xs font-bold mb-4"></div>
+                <h2 id="result-head" class="text-3xl font-serif mb-4 italic"></h2>
+                <p id="result-body" class="text-slate-300 italic mb-8"></p>
+                
+                <div id="red-zone-help" class="hidden bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl mb-6">
+                    <p class="text-rose-200 text-sm font-bold mb-2">Please talk to someone:</p>
+                    <a href="tel:9820466726" class="text-rose-400 underline font-bold">Aasra Helpline: 9820466726</a>
+                </div>
+
+                <p class="text-[10px] text-slate-500 border-t border-white/10 pt-6 uppercase tracking-widest">
+                    Medical Disclaimer: This is a self-reflection tool, not a diagnosis.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizSteps = [
+            { q: "2. The Social Battery: Energy kitni bachi hai?", opt: ["🔋 100%: Ready to hang out", "🪫 50%: Need a nap soon", "⚠️ 10%: Power save mode", "🔌 0%: Please don't perceive me"], scores: [1,2,3,4] },
+            { q: "3. The Focus Lens: Kaam ho pa raha hai?", opt: ["✅ Auto-Pilot: Knocking tasks out", "🐢 Slow Motion: Feels heavy", "🚧 Roadblock: Getting stuck"], scores: [1,2,4] },
+            { q: "4. The Body Scan: Body physically kaisi feel ho rahi hai?", opt: ["🍃 Light: Relaxed and loose", "🧱 Tense: Clenched jaw/shoulders", "🧸 Heavy: Walking through mud"], scores: [1,3,4] },
+            { q: "5. The Joy Meter: Akhiri baar smile kab kiya?", opt: ["⭐ Today: Found several things", "🗓️ A few days ago: Bit of a dry spell", "🌫️ I can’t remember: Long time"], scores: [1,2,4] }
+        ];
+
+        let currentQ = 0;
+        let scoreTotal = 0;
+
+        function nextStep(score) {
+            scoreTotal += score;
+            if (currentQ < quizSteps.length) {
+                const data = quizSteps[currentQ];
+                document.getElementById('q-text').innerText = data.q;
+                let btns = "";
+                data.opt.forEach((val, i) => {
+                    btns += `<button class="option-btn" onclick="nextStep(${data.scores[i]})">${val}</button>`;
+                });
+                document.getElementById('options-list').innerHTML = btns;
+                currentQ++;
+            } else {
+                renderFinal();
+            }
+        }
+
+        function renderFinal() {
+            document.getElementById('question-container').classList.add('hidden');
+            const resArea = document.getElementById('result-area');
+            resArea.classList.remove('hidden');
+
+            const tag = document.getElementById('zone-tag');
+            const head = document.getElementById('result-head');
+            const body = document.getElementById('result-body');
+
+            if (scoreTotal <= 9) {
+                tag.innerText = "GREEN ZONE";
+                tag.className = "inline-block px-5 py-1 rounded-full text-xs font-bold mb-4 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                head.innerText = "Radiant & Balanced ✨";
+                body.innerText = "Bhai, aapka emotional weather ekdum saaf hai! Isi positivity ko maintain karein.";
+            } else if (scoreTotal <= 14) {
+                tag.innerText = "AMBER ZONE";
+                tag.className = "inline-block px-5 py-1 rounded-full text-xs font-bold mb-4 bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                head.innerText = "Needs Recharging 🌤️";
+                body.innerText = "Halka sa fog dikh raha hai. Ek chhota sa break lein aur apni battery recharge karein.";
+            } else {
+                tag.innerText = "RED ZONE";
+                tag.className = "inline-block px-5 py-1 rounded-full text-xs font-bold mb-4 bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                head.innerText = "Stormy Weather 🔴";
+                body.innerText = "Aisa lag raha hai ki aap overwhelmed feel kar rahe hain. It's okay to not be okay. Rest karein.";
+                if(scoreTotal >= 15) document.getElementById('red-zone-help').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

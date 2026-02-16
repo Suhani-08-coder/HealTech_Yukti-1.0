@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindEase Dashboard - Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            background: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+            font-family: 'Lato', sans-serif;
+        }
+        .overlay { position: fixed; inset: 0; background: linear-gradient(to bottom, rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.9)); z-index: -1; }
+        .glass { 
+            background: rgba(30, 27, 75, 0.4); 
+            backdrop-filter: blur(25px); 
+            border: 1px solid rgba(165, 180, 252, 0.2); 
+            border-radius: 30px; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .glass:hover { border-color: rgba(45, 212, 191, 0.4); }
+        .sidebar { width: 220px; position: fixed; height: 100vh; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px); border-right: 1px solid rgba(255, 255, 255, 0.1); z-index: 50; }
+        .content { margin-left: 220px; padding: 60px 80px; }
+        .accent-teal { color: #2dd4bf; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <div class="sidebar p-8 flex flex-col">
+        <h2 class="font-serif text-2xl mb-12 accent-teal tracking-widest">MindEase</h2>
+        <nav class="space-y-6">
+            <a href="Welcome.html" class="flex items-center gap-3 text-slate-400 hover:text-white transition group">
+                <span class="text-lg group-hover:scale-110 transition">○</span> Home
+            </a>
+            <a href="#" class="flex items-center gap-3 text-white font-bold border-r-2 border-teal-500 pr-4">
+                <span class="text-lg accent-teal">📊</span> Dashboard
+            </a>
+            <a href="relax.html" class="flex items-center gap-3 text-slate-400 hover:text-white transition group">
+                <span class="text-lg group-hover:scale-110 transition">△</span> Relax
+            </a>
+        </nav>
+        <div class="mt-auto">
+            <button onclick="logout()" class="flex items-center gap-3 text-red-400 hover:text-red-300 transition">
+                <span>✕</span> Logout
+            </button>
+        </div>
+    </div>
+
+    <div class="content">
+        <header class="mb-12">
+            <h1 class="text-5xl font-serif mb-2">Hello, <span id="userName" class="accent-teal">Explorer</span></h1>
+            <p class="text-slate-300 italic opacity-80 text-lg">Your emotional landscape for the month.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+            <div class="glass p-8 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">🌿</div>
+                <p class="text-slate-400 text-xs uppercase tracking-[0.2em] mb-2">Daily Mood Score</p>
+                <h3 id="dailyScore" class="text-3xl font-serif">--</h3>
+            </div>
+            <div class="glass p-8 border-l-4 border-teal-500/50">
+                <p class="text-slate-400 text-xs uppercase tracking-[0.2em] mb-2">Current Streak</p>
+                <h3 id="currentStreakText" class="text-3xl font-serif">0 Days 🔥</h3>
+            </div>
+            <div class="glass p-8 border-l-4 border-red-500/50">
+                <p class="text-slate-400 text-xs uppercase tracking-[0.2em] mb-2">Pattern Alert</p>
+                <h3 id="patternAlert" class="text-xl font-serif text-red-400">Stable Pattern ✨</h3>
+            </div>
+
+            <div class="glass p-6 border-t-4 border-indigo-500/50 flex flex-col justify-between">
+                <div>
+                    <p class="text-indigo-300 text-[10px] uppercase tracking-[0.2em] mb-3 font-bold">Detection Card</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-end">
+                            <span class="text-slate-400 text-[10px]">Mood:</span>
+                            <span id="passiveMood" class="text-lg font-serif italic text-white leading-none">Calm</span>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <span class="text-slate-400 text-[10px]">Confidence:</span>
+                            <span id="confidenceLevel" class="text-sm font-bold text-teal-400 leading-none">80% Sure</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-white/5">
+                    <p class="text-slate-400 text-[9px] uppercase mb-1">Reasoning:</p>
+                    <p id="reasoningText" class="text-[10px] leading-tight text-slate-300 italic">Late-night usage + negative sentiment words detected.</p>
+                </div>
+            </div>
+        </div>
+        <div id="riskAlert" class="hidden mt-4 p-4 rounded-xl bg-red-500/10 text-red-300 text-sm"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-12">
+            <div class="glass p-10">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="text-xl font-serif">Daily Mood Trend</h3>
+                    <span class="text-[10px] uppercase tracking-widest text-teal-500">Analysis: Active</span>
+                </div>
+                <div class="h-[300px]">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+            <div class="glass p-10">
+                <h3 class="text-xl font-serif mb-8">Weekly Intensity</h3>
+                <div class="h-[300px]">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <script src="Dashboard.js"></script>
+    <script>
+        function logout() { localStorage.clear(); window.location.href = "loginPage.html"; }
+    </script>
+</body>
+</html>

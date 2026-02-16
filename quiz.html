@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Wellness Quiz - MindEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.2), rgba(15, 23, 42, 0.8));
+            z-index: -1;
+        }
+
+        /* Consistent Labeled Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 30px 20px;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 50px;
+            text-decoration: none;
+            padding-left: 10px;
+        }
+
+        .nav-logo {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #1e293b;
+            font-weight: bold;
+        }
+
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .nav-icon {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            text-decoration: none;
+            border-radius: 12px;
+        }
+
+        .nav-icon span {
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .nav-icon:hover, .nav-icon.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-container {
+            margin-left: 220px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .quiz-card {
+            width: 100%;
+            max-width: 800px;
+            background: transparent;
+            position: relative;
+        }
+
+        #question-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            line-height: 1.2;
+            text-align: center;
+            margin-bottom: 60px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            font-weight: 400;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .option-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 25px 40px;
+            margin-bottom: 20px;
+            border-radius: 50px;
+            text-align: left;
+            font-size: 1.2rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .progress-container {
+            position: absolute;
+            top: -60px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step-indicator {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.6;
+            margin-bottom: 10px;
+        }
+
+        .progress-track {
+            width: 100px;
+            height: 2px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            box-shadow: 0 0 10px white;
+            transition: width 0.6s ease;
+        }
+
+        #result-container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            padding: 60px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .score-display {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .ai-feedback-box {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            font-weight: 300;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .action-btn {
+            background: white;
+            color: #1e293b;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 0 10px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: 70px; bottom: 0; top: auto; flex-direction: row; padding: 0 10px; }
+            .nav-brand, .nav-icon span { display: none; }
+            .nav-icon { justify-content: center; width: auto; margin-bottom: 0; }
+            .main-container { margin-left: 0; padding: 40px 20px 100px 20px; }
+            #question-text { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+
+    <nav class="sidebar">
+        <a href="Welcome.html" class="nav-brand">
+            <div class="nav-logo">M</div>
+            <span class="brand-name">MindEase</span>
+        </a>
+
+        <a href="Welcome.html" class="nav-icon">
+            <i>○</i><span>Home</span>
+        </a>
+        <a href="resources.html" class="nav-icon">
+            <i>≋</i><span>Breath</span>
+        </a>
+        <a href="quiz.html" class="nav-icon active">
+            <i>△</i><span>Relax</span>
+        </a>
+        <a href="journal.html" class="nav-icon">
+            <i>✎</i><span>Journal</span>
+        </a>
+        <a href="location.html" class="nav-icon">
+            <i>◇</i><span>Centres</span>
+        </a>
+        
+        <div class="mt-auto w-full">
+            <button onclick="logout()" class="nav-icon" style="color: #fca5a5; background: transparent; border: none; cursor: pointer;">
+                <i>✕</i><span>Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="quiz-card">
+            
+            <div id="quiz-container">
+                <div class="progress-container">
+                    <span class="step-indicator">Reflection <span id="current-step">1</span> / 5</span>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <h2 id="question-text"></h2>
+                <div id="options-container" class="flex flex-col"></div>
+            </div>
+
+            <div id="loading-container" class="hidden text-center">
+                <div class="inline-block w-16 h-16 border-2 border-white/20 border-t-white rounded-full animate-spin mb-8"></div>
+                <h3 class="text-2xl font-serif italic opacity-80">Consulting with AI...</h3>
+            </div>
+
+            <div id="result-container" class="hidden">
+                <h2 class="text-lg uppercase tracking-widest opacity-60 mb-6">Wellness Analysis</h2>
+                <span id="score-display" class="score-display">0</span>
+                <span class="text-sm uppercase tracking-widest mb-10 block">Wellness Score</span>
+                <div class="ai-feedback-box">
+                    <p id="ai-feedback-text">Loading insights...</p>
+                </div>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="window.location.href='resources.html'" class="action-btn">Go to Sanctuary</button>
+                    <button onclick="restartQuiz()" class="action-btn secondary">Reflect Again</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="quiz-script.js"></script>
+    <script>
+        function logout() {
+            localStorage.clear();
+            window.location.href = "loginPage.html";
+        }
+    </script>
+</body>
+</html>

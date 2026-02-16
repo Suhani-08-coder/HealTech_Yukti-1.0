@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Flow - MindEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1476610182048-b716b8518aae?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            z-index: -1;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-icon { width: 100%; display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: rgba(255, 255, 255, 0.6); font-size: 1.1rem; margin-bottom: 10px; transition: 0.3s; text-decoration: none; border-radius: 12px; }
+        .nav-icon:hover, .nav-icon.active { background: rgba(255, 255, 255, 0.15); color: white; }
+        
+        .content-area { margin-left: 220px; padding: 40px; height: 100vh; display: flex; flex-direction: column; }
+        
+        canvas {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            cursor: crosshair;
+            flex-grow: 1;
+        }
+        .toolbar {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 15px 30px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+            width: fit-content;
+        }
+        .color-dot { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .color-dot.active { border-color: white; transform: scale(1.2); }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <nav class="sidebar">
+        <a href="Welcome.html" class="nav-icon"><i>○</i><span>Home</span></a>
+        <a href="relax.html" class="nav-icon active"><i>△</i><span>Back to Relax</span></a>
+        <div class="mt-auto w-full">
+            <button onclick="clearCanvas()" class="nav-icon text-rose-300"><i>✕</i><span>Clear Canvas</span></button>
+        </div>
+    </nav>
+
+    <div class="content-area">
+        <div class="mb-6 flex justify-between items-end">
+            <div>
+                <h1 class="text-4xl font-serif">Color Flow</h1>
+                <p class="text-slate-400 font-light italic">Let your emotions flow through colors.</p>
+            </div>
+            <div class="toolbar">
+                <div class="color-dot active" style="background: #93c5fd;" onclick="setColor('#93c5fd', this)"></div>
+                <div class="color-dot" style="background: #6ee7b7;" onclick="setColor('#6ee7b7', this)"></div>
+                <div class="color-dot" style="background: #fcd34d;" onclick="setColor('#fcd34d', this)"></div>
+                <div class="color-dot" style="background: #fda4af;" onclick="setColor('#fda4af', this)"></div>
+                <div class="color-dot" style="background: #ffffff;" onclick="setColor('#ffffff', this)"></div>
+                <input type="range" id="brushSize" min="1" max="50" value="15" class="ml-4 accent-white">
+            </div>
+        </div>
+
+        <canvas id="flowCanvas"></canvas>
+    </div>
+
+        <script >const canvas = document.getElementById('flowCanvas');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+        let color = '#93c5fd';
+        let lineWidth = 15;
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            // Set line properties for smooth "flow"
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+
+        function finishedPosition() {
+            painting = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!painting) return;
+            
+            ctx.lineWidth = document.getElementById('brushSize').value;
+            ctx.strokeStyle = color;
+
+            // Drawing logic
+            ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+
+        function setColor(newColor, el) {
+            color = newColor;
+            document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', finishedPosition);
+        canvas.addEventListener('mousemove', draw);
+        </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - MindEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.3), rgba(15, 23, 42, 0.6));
+            backdrop-filter: blur(2px);
+        }
+
+        .login-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 60px 40px;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 4px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .minimal-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 15px 0;
+            color: white;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .minimal-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+        }
+
+        .minimal-input:focus {
+            border-bottom-color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 10px;
+        }
+
+        .minimal-select {
+            background-color: transparent; 
+            color: white;
+            border-radius: 0;
+        }
+        
+        .minimal-select option {
+            background-color: #1e293b;
+            color: white;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: white;
+            color: #0f172a;
+            padding: 16px;
+            border-radius: 50px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-top: 30px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Lato', sans-serif;
+            font-size: 0.9rem;
+            padding-bottom: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active-tab {
+            color: white;
+            border-bottom: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+
+    <div class="login-card">
+        
+        <div class="text-center mb-10">
+            <h1 class="text-4xl text-white font-serif italic mb-2 tracking-wide">MindEase</h1>
+            <p class="text-slate-300 font-light text-sm tracking-widest uppercase">Begin your journey to calm</p>
+        </div>
+
+        <div class="flex justify-center gap-8 mb-10 auth-tabs">
+            <button onclick="showSignup(); setActive(this)" id="tab-signup" class="tab-btn active-tab">Sign Up</button>
+            <button onclick="showLogin(); setActive(this)" id="tab-login" class="tab-btn">Log In</button>
+        </div>
+
+        <div id="signup-form">
+            <div class="space-y-4">
+                <input type="text" id="s-name" placeholder="Full Name" class="minimal-input">
+                <input type="email" id="s-email" placeholder="Email Address" class="minimal-input">
+                <div class="flex gap-4">
+                    <input type="number" id="s-age" placeholder="Age" class="minimal-input w-1/2">
+                    <select id="s-gender" class="minimal-input minimal-select w-1/2">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <button onclick="handleAuth('signup')" class="btn-primary">Continue</button>
+            </div>
+        </div>
+
+        <div id="login-form" style="display:none;">
+            <div class="space-y-6">
+                <p class="text-white/80 font-light text-center">Welcome back.</p>
+                <input type="email" id="l-email" placeholder="Email Address" class="minimal-input">
+                <button onclick="handleAuth('login')" class="btn-primary">Sign In</button>
+            </div>
+        </div>
+
+        <div id="otp-form" style="display:none;">
+            <div class="space-y-6 text-center">
+                <p class="text-white/80 font-light">Please enter the code sent to your email.</p>
+                <input type="text" id="otp-input" placeholder="000 000" class="minimal-input text-center text-2xl tracking-[10px]">
+                <button onclick="verifyCode()" class="btn-primary">Enter Sanctuary</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="./login-script.js"></script>
+    <script>
+        function setActive(btn) {
+            document.querySelectorAll('.auth-tabs button').forEach(b => {
+                b.className = 'tab-btn';
+            });
+            btn.className = 'tab-btn active-tab';
+        }
+    </script>
+</body>
+</html>

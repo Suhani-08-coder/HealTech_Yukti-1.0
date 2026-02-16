@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Linker - MindEase Sanctuary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent-glow: rgba(45, 212, 191, 0.3);
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: white;
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Ambient Background Image with Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1476610182048-b716b8518aae?q=80&w=2000') no-repeat center/cover;
+            opacity: 0.4;
+            z-index: -2;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            height: 100vh;
+            position: fixed;
+            left: 0; top: 0;
+            padding: 40px 20px;
+            z-index: 100;
+        }
+
+        .nav-icon {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 18px;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-icon:hover, .nav-icon.active {
+            background: var(--glass-bg);
+            color: #5eead4;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+        }
+
+        .content-area {
+            margin-left: 240px;
+            flex-grow: 1;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .game-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 40px;
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
+        }
+
+        .canvas-container {
+            position: relative;
+            background: #020617;
+            border-radius: 24px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.9);
+            margin-top: 20px;
+        }
+
+        canvas {
+            border-radius: 20px;
+            cursor: crosshair;
+            display: block;
+        }
+
+        .btn-ui {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 12px 32px;
+            border-radius: 100px;
+            font-weight: 600;
+            transition: 0.3s;
+            margin-top: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+        }
+
+        .btn-ui:hover {
+            background: #5eead4;
+            color: #0f172a;
+            box-shadow: 0 0 30px rgba(94, 234, 212, 0.4);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="flex items-center gap-3 mb-12 pl-4">
+            <div class="w-10 h-10 bg-teal-400 rounded-xl flex items-center justify-center text-slate-900 font-bold text-xl">M</div>
+            <span class="font-serif text-xl text-white tracking-widest uppercase">MindEase</span>
+        </div>
+        <a href="Welcome.html" class="nav-icon"><span>Home</span></a>
+        <a href="relax.html" class="nav-icon active"><span>Back to Relax</span></a>
+        <div class="mt-auto">
+            <button onclick="resetGame()" class="nav-icon w-full text-teal-300">↻ <span>New Sky</span></button>
+        </div>
+    </nav>
+
+    <div class="content-area">
+        <div class="game-box">
+            <h1 class="text-4xl font-serif italic mb-2 tracking-wide">Star Linker</h1>
+            <p class="text-slate-400 font-light mb-8 italic">"In the silence of the night, find the lines that connect us all."</p>
+            
+            <div class="canvas-container">
+                <canvas id="starCanvas"></canvas>
+            </div>
+            
+            <button onclick="resetGame()" class="btn-ui">Reset Constellation</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        const sparkleSound = new Audio('audio/sparkle.mp3'); 
+        sparkleSound.volume = 0.2;
+
+        let stars = [];
+        let lines = [];
+        let isDrawing = false;
+        let lastStar = null;
+        let mouseX = 0, mouseY = 0;
+
+        function init() {
+            canvas.width = canvas.parentElement.clientWidth - 20;
+            canvas.height = 450;
+            createStars();
+            animate();
+        }
+
+        function createStars() {
+            stars = [];
+            for (let i = 0; i < 45; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 1,
+                    pulse: Math.random() * Math.PI,
+                    id: i
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background glow
+            const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
+            gradient.addColorStop(0, '#020617');
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw established lines
+            ctx.strokeStyle = "rgba(94, 234, 212, 0.15)";
+            ctx.lineWidth = 1.5;
+            lines.forEach(line => {
+                ctx.beginPath();
+                ctx.moveTo(line.from.x, line.from.y);
+                ctx.lineTo(line.to.x, line.to.y);
+                ctx.stroke();
+            });
+
+            // Draw active connection line
+            if (isDrawing && lastStar) {
+                ctx.strokeStyle = "rgba(94, 234, 212, 0.4)";
+                ctx.setLineDash([8, 4]);
+                ctx.beginPath();
+                ctx.moveTo(lastStar.x, lastStar.y);
+                ctx.lineTo(mouseX, mouseY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Draw Stars
+            stars.forEach(star => {
+                const opacity = 0.4 + Math.sin(Date.now() * 0.002 + star.pulse) * 0.4;
+                
+                // Outer glow
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = "white";
+                
+                ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.shadowBlur = 0; // Reset for next elements
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (e.clientX || (e.touches ? e.touches[0].clientX : 0)) - rect.left,
+                y: (e.clientY || (e.touches ? e.touches[0].clientY : 0)) - rect.top
+            };
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            const pos = getMousePos(e);
+            const clickedStar = stars.find(s => Math.hypot(s.x - pos.x, s.y - pos.y) < 20);
+            if (clickedStar) {
+                isDrawing = true;
+                lastStar = clickedStar;
+                sparkleSound.play().catch(() => {});
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const pos = getMousePos(e);
+            mouseX = pos.x;
+            mouseY = pos.y;
+            
+            if (!isDrawing) return;
+
+            const hoveringStar = stars.find(s => Math.hypot(s.x - pos.x, s.y - pos.y) < 20);
+            if (hoveringStar && hoveringStar !== lastStar) {
+                const exists = lines.some(l => 
+                    (l.from.id === lastStar.id && l.to.id === hoveringStar.id) || 
+                    (l.from.id === hoveringStar.id && l.to.id === lastStar.id)
+                );
+                
+                if (!exists) {
+                    lines.push({ from: lastStar, to: hoveringStar });
+                    lastStar = hoveringStar;
+                    sparkleSound.currentTime = 0;
+                    sparkleSound.play().catch(() => {});
+                }
+            }
+        });
+
+        window.addEventListener('mouseup', () => { isDrawing = false; lastStar = null; });
+
+        function resetGame() {
+            lines = [];
+            createStars();
+        }
+
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

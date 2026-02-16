@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relax - MindEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+   <style>
+    body {
+        background: url('https://images.unsplash.com/photo-1476610182048-b716b8518aae?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        color: white;
+        overflow-x: hidden;
+        margin: 0;
+    }
+    .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.4);
+        z-index: -1;
+    }
+    
+    /* Sidebar Styling - Back to Original Subtle Look */
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 220px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 30px 20px;
+        z-index: 50;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(15px);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-brand { 
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+        margin-bottom: 50px; 
+        text-decoration: none; 
+        padding-left: 10px; 
+    }
+    
+    .nav-logo { 
+        width: 40px; 
+        height: 40px; 
+        background: white; 
+        border-radius: 10px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-size: 1.2rem; 
+        color: #1e293b; 
+        font-weight: bold; 
+    }
+    
+    .brand-name { 
+        font-family: 'Playfair Display', serif; 
+        font-size: 1.2rem; 
+        color: white; 
+        letter-spacing: 1px; 
+    }
+    
+    .nav-icon { 
+        width: 100%; 
+        display: flex; 
+        align-items: center; 
+        gap: 15px; 
+        padding: 12px 15px; 
+        color: rgba(255, 255, 255, 0.6); 
+        font-size: 1.1rem; /* Back to original size */
+        margin-bottom: 10px; 
+        transition: all 0.3s; 
+        text-decoration: none; 
+        border-radius: 12px; 
+    }
+    
+    .nav-icon:hover, .nav-icon.active { 
+        background: rgba(255, 255, 255, 0.15); 
+        color: white; 
+    }
+
+    .content-area { 
+        margin-left: 220px; 
+        padding: 60px 80px; 
+        max-width: 1200px; 
+    }
+
+    /* Breathing Animation */
+    .breathing-circle {
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 50px auto;
+        animation: breathe 8s infinite ease-in-out;
+        backdrop-filter: blur(10px);
+    }
+    
+    @keyframes breathe {
+        0%, 100% { transform: scale(1); background: rgba(255, 255, 255, 0.1); }
+        50% { transform: scale(1.5); background: rgba(255, 255, 255, 0.2); }
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+</style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <nav class="sidebar">
+        <a href="Welcome.html" class="nav-brand">
+            <div class="nav-logo">M</div>
+            <span class="brand-name">MindEase</span>
+        </a>
+        <a href="Welcome.html" class="nav-icon"><i>○</i><span>Home</span></a>
+        <a href="resources.html" class="nav-icon"><i>≋</i><span>Breath</span></a>
+        <a href="relax.html" class="nav-icon active"><i>△</i><span>Relax</span></a>
+        <a href="journal.html" class="nav-icon"><i>✎</i><span>Journal</span></a>
+        <a href="location.html" class="nav-icon"><i>◇</i><span>Centres</span></a>
+        
+        <div class="mt-auto w-full">
+            <button onclick="logout()" class="nav-icon" style="color: #fca5a5;">
+                <i>✕</i><span>Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="content-area">
+        <div class="mb-12">
+            <h1 class="text-5xl font-serif mb-4">Peace of Mind.</h1>
+            <p class="text-xl text-slate-300 font-light">Explore a sanctuary designed to calm your senses and nourish your soul.</p>
+        </div>
+
+        <div class="text-center py-10 mb-20">
+            <div class="breathing-circle">
+                <span id="breathText" class="text-lg font-light tracking-widest uppercase">Breathe In</span>
+               
+            </div>
+            <div class="flex gap-4 justify-center">
+                <button class="border-2 border-solid p-2" onclick="startBreathing()">Start Relax</button>
+                <button class="border-2 border-solid p-2"  onclick="stopBreathing()">Stop Relax</button>
+            </div>
+
+        </div>
+
+        <h2 class="text-2xl font-serif mb-8 border-b border-white/10 pb-2 italic">Mindful Games</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+            
+            <div class="group relative overflow-hidden glass-card p-8 hover:border-white/40">
+                <div class="text-center group-hover:opacity-10 transition-all duration-500">
+                    <span class="text-4xl block mb-4">⭐</span>
+                    <h3 class="text-xl font-serif">Star Linker</h3>
+                    <p class="text-sm text-slate-400 mt-2">Connect the star to light up the night sky.</p>
+                </div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-black/40">
+                    <button onclick="window.location.href='star.html'" class="bg-white text-slate-900 px-6 py-2 rounded-full text-sm font-bold">Start Game</button>
+                   
+                </div>
+            </div>
+
+            <div class="group relative overflow-hidden glass-card p-8 hover:border-white/40">
+                <div class="text-center group-hover:opacity-10 transition-all duration-500">
+                    <span class="text-4xl block mb-4">🎨</span>
+                    <h3 class="text-xl font-serif">Color Flow</h3>
+                    <p class="text-sm text-slate-400 mt-2">Your emotions, on a canvas.</p>
+                </div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-black/40">
+                    <button onclick="window.location.href='colorflow.html'" class="bg-white text-slate-900 px-6 py-2 rounded-full text-sm font-bold">Free Paint</button>
+                    
+                </div>
+            </div>
+
+            <div class="group relative overflow-hidden glass-card p-8 hover:border-white/40">
+                <div class="text-center group-hover:opacity-10 transition-all duration-500">
+                    <span class="text-4xl block mb-4">🫧</span>
+                    <h3 class="text-xl font-serif">Bubble Wrap </h3>
+                    <p class="text-sm text-slate-400 mt-2">Connect the celestial dots.</p>
+                </div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-black/40">
+                    <button onclick="window.location.href='BubbleWrap.html'" class="bg-white text-slate-900 px-6 py-2 rounded-full text-sm font-bold">Start Game</button>
+                   
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-serif mb-8 border-b border-white/10 pb-2 italic">Reflective Quizzes</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+            <div class="group relative overflow-hidden glass-card p-10 hover:bg-white/10">
+                <div class="flex items-center gap-6 group-hover:opacity-20 transition-all duration-500">
+                    <div class="text-4xl bg-white/10 p-4 rounded-xl">📊</div>
+                    <div>
+                        <h3 class="text-2xl font-serif">Stress Audit</h3>
+                        <p class="text-slate-400 font-light">Assess your current energy state.</p>
+                    </div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center translate-x-full group-hover:translate-x-0 transition-transform duration-500 bg-teal-900/40">
+                    <button onclick="window.location.href='quiz.html'" class="bg-white text-teal-900 px-8 py-3 rounded-full font-bold">Take Assessment</button>
+                </div>
+            </div>
+
+            <div class="group relative overflow-hidden glass-card p-10 hover:bg-white/10">
+                <div class="flex items-center gap-6 group-hover:opacity-20 transition-all duration-500">
+                    <div class="text-4xl bg-white/10 p-4 rounded-xl">🎭</div>
+                    <div>
+                        <h3 class="text-2xl font-serif">Mood Archetype</h3>
+                        <p class="text-slate-400 font-light">Understand your emotional core.</p>
+                    </div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center translate-x-full group-hover:translate-x-0 transition-transform duration-500 bg-purple-900/40">
+                    <button  onclick="window.location.href='quiz2.html'" class="bg-white text-purple-900 px-8 py-3 rounded-full font-bold">Start Quiz</button>
+                </div>
+            </div>
+        </div>
+
+       
+    </div>
+   <script>
+const textEl = document.getElementById("breathText");
+
+let relaxSound = new Audio("audio/deep-breathing.mp3");
+relaxSound.loop = true;
+relaxSound.volume = 0;
+
+let breathingInterval = null;
+let fadeInterval = null;
+
+// Smooth Volume Fade
+function fadeVolume(target, duration) {
+    clearInterval(fadeInterval);
+
+    const stepTime = 100;
+    const steps = duration / stepTime;
+    const volumeStep = (target - relaxSound.volume) / steps;
+
+    fadeInterval = setInterval(() => {
+        relaxSound.volume += volumeStep;
+
+        if (
+            (volumeStep > 0 && relaxSound.volume >= target) ||
+            (volumeStep < 0 && relaxSound.volume <= target)
+        ) {
+            relaxSound.volume = target;
+            clearInterval(fadeInterval);
+        }
+    }, stepTime);
+}
+
+// Breathing phases
+function inhale() {
+    textEl.innerText = "Breathe In";
+    fadeVolume(0.6, 6000);
+}
+
+function hold() {
+    textEl.innerText = "Hold";
+}
+
+function exhale() {
+    textEl.innerText = "Breathe Out";
+    fadeVolume(0.2, 6000);
+}
+
+// Start Breathing (duplicate interval protection)
+function startBreathing() {
+    if (breathingInterval) return; // already running
+
+    relaxSound.play();
+
+    inhale();
+    setTimeout(hold, 6000);
+    setTimeout(exhale, 8000);
+
+    breathingInterval = setInterval(() => {
+        inhale();
+        setTimeout(hold, 6000);
+        setTimeout(exhale, 8000);
+    }, 14000);
+}
+
+// Stop Breathing
+function stopBreathing() {
+    clearInterval(breathingInterval);
+    breathingInterval = null;
+
+    fadeVolume(0, 3000);
+
+    setTimeout(() => {
+        relaxSound.pause();
+        relaxSound.currentTime = 0;
+        textEl.innerText = "Relax";
+    }, 3000);
+}
+</script>
+
+
+</body>
+</html>

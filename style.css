@@ -1,0 +1,59 @@
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.nav-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    transition: all 0.3s;
+    text-decoration: none;
+    position: relative;
+}
+
+.nav-icon:hover, .nav-icon.active {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-icon::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 85px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    color: white;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    white-space: nowrap;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-icon:hover::after {
+    opacity: 1;
+    left: 75px;
+}

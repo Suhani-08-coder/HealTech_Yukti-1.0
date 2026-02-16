@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - MindEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1476610182048-b716b8518aae?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+        }
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            z-index: -1;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 30px 20px;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 50px;
+            text-decoration: none;
+            padding-left: 10px;
+        }
+        .nav-logo {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #1e293b;
+            font-weight: bold;
+        }
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: white;
+            letter-spacing: 1px;
+        }
+        .nav-icon {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            text-decoration: none;
+            border-radius: 12px;
+        }
+        .nav-icon span {
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+        .nav-icon:hover, .nav-icon.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .content-area {
+            margin-left: 220px;
+            padding: 60px 80px;
+            max-width: 1200px;
+        }
+        .mood-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mood-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        .mood-btn.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: white;
+        }
+        .mood-emoji { font-size: 3rem; margin-bottom: 15px; display: block; }
+        .mood-label { font-family: 'Lato', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .glass-message {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border-left: 4px solid #fff;
+            padding: 40px;
+            border-radius: 0 20px 20px 0;
+            margin-top: 50px;
+        }
+        .hero-title { font-family: 'Playfair Display', serif; font-size: 4rem; line-height: 1.2; margin-bottom: 20px; }
+        .btn-action {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: white;
+            color: #1e293b;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        #chatOverlay { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); }
+        .chat-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            width: 100%;
+            outline: none;
+            resize: none;
+        }
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: 70px; bottom: 0; top: auto; flex-direction: row; padding: 0 10px; }
+            .nav-brand, .nav-icon span { display: none; }
+            .nav-icon { justify-content: center; width: auto; margin-bottom: 0; }
+            .content-area { margin-left: 0; padding: 40px 20px 100px 20px; }
+            .hero-title { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <nav class="sidebar">
+        <a href="Welcome.html" class="nav-brand">
+            <div class="nav-logo">M</div>
+            <span class="brand-name">MindEase</span>
+        </a>
+        <a href="Welcome.html" class="nav-icon active"><i>○</i><span>Home</span></a>
+        <a href="resources.html" class="nav-icon"><i>≋</i><span>Breath</span></a>
+        <a href="relax.html" class="nav-icon"><i>△</i><span>Relax</span></a>
+        <a href="journal.html" class="nav-icon"><i>✎</i><span>Journal</span></a>
+        <a href="location.html" class="nav-icon"><i>◇</i><span>Centres</span></a>
+        <div class="mt-auto w-full">
+            <button onclick="logout()" class="nav-icon" style="color: #fca5a5; background: transparent; border: none; cursor: pointer;">
+                <i>✕</i><span>Logout</span>
+            </button>
+        </div>
+    </nav>
+    <div class="content-area">
+        <div class="fade-in mb-16">
+            <h1 class="hero-title">Good Evening, <span id="usernameDisplay" class="italic">Friend</span>.</h1>
+            <p class="text-xl text-slate-200 font-light tracking-wide">How is your mind settling today?</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+            <div class="mood-btn" onclick="handleMood('great', this)"><span class="mood-emoji">✨</span><span class="mood-label">Radiant</span></div>
+            <div class="mood-btn" onclick="handleMood('good', this)"><span class="mood-emoji">🌿</span><span class="mood-label">Peaceful</span></div>
+            <div class="mood-btn" onclick="handleMood('neutral', this)"><span class="mood-emoji">☁️</span><span class="mood-label">Cloudy</span></div>
+            <div class="mood-btn" onclick="handleMood('struggling', this)"><span class="mood-emoji">🌧️</span><span class="mood-label">Heavy</span></div>
+            <div class="mood-btn" onclick="handleMood('awful', this)"><span class="mood-emoji">⛈️</span><span class="mood-label">Stormy</span></div>
+        </div>
+        <div id="moodMessage" class="glass-message hidden">
+            <h2 id="msgTitle" class="text-2xl font-serif mb-4"></h2>
+            <p id="msgBody" class="text-lg text-slate-200 font-light leading-relaxed mb-6"></p>
+            <button id="msgBtn" class="btn-action">Begin Session</button>
+        </div>
+        <div class="mt-20 text-center">
+            <button onclick="openChat()" class="text-white/60 hover:text-white transition-colors font-light tracking-widest text-sm uppercase border-b border-white/20 pb-1 hover:border-white">
+                Speak with Companion
+            </button>
+        </div>
+    </div>
+    <div id="chatOverlay" class="hidden fixed inset-0 z-50 flex justify-center items-center p-6 opacity-0" style="transition: opacity 0.5s ease;">
+        <div class="max-w-2xl w-full flex flex-col">
+            <div class="flex justify-between items-center mb-10">
+                <span class="text-white/50 text-sm uppercase tracking-widest">AI Companion</span>
+                <button onclick="closeChat()" class="text-white text-4xl font-light hover:rotate-90 transition-transform">×</button>
+            </div>
+            <textarea id="userNote" placeholder="What is weighing on your mind?" class="chat-textarea" rows="1"></textarea>
+            <div id="aiResponse" class="hidden mt-8 text-white font-serif text-xl leading-relaxed italic opacity-90"></div>
+            <div class="mt-10 flex justify-end">
+                <button onclick="submitNote()" class="btn-action">Release</button>
+            </div>
+        </div>
+    </div>
+     <div class="mt-8 flex flex-col items-center">
+            <a href="Dashboard.html" class="group relative px-8 py-4 bg-white/5 border border-white/10 rounded-2xl transition-all duration-500 hover:bg-teal-500/10 hover:border-teal-500/50 hover:shadow-[0_0_30px_rgba(45,212,191,0.2)]">
+                <div class="flex items-center gap-4">
+                    <span class="text-2xl">📊</span>
+                    <div class="text-left">
+                        <p class="text-[10px] uppercase tracking-[0.3em] text-teal-500 font-bold">Analytics</p>
+                        <h3 class="text-xl font-serif text-white">MindEase Dashboard</h3>
+                    </div>
+                    <span class="ml-4 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">❯</span>
+                </div>
+            </a>
+        </div>
+    <script src="welcome-script.js"></script>
+    
+    <script> 
+    
+             function logout() {
+                localStorage.clear();
+                window.location.href = "loginPage.html";
+            }
+       
+    </script>
+</body>
+</html>

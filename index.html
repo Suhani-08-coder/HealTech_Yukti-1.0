@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindEase | Breathe. Reflect. Heal.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0f172a;
+        }
+
+        /* Cinematic Background Image */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            filter: brightness(0.6);
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(15, 23, 42, 0.8) 100%);
+            z-index: -1;
+        }
+
+        /* Float Animation */
+        .float-animation {
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cta-glow:hover {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="text-white font-sans">
+
+    <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=2000&auto=format&fit=crop" class="bg-video" alt="Calm Background">
+    <div class="overlay"></div>
+
+    <nav class="fixed top-0 w-full z-50 glass-nav px-10 py-6 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold text-xl">M</div>
+            <span class="font-serif text-2xl tracking-tight">MindEase</span>
+        </div>
+        <div class="hidden md:flex gap-10 text-sm uppercase tracking-widest opacity-80 font-light">
+           
+            <a href="loginPage.html" class="px-6 py-2 border border-white/30 rounded-full hover:bg-white hover:text-slate-900 transition duration-500">Sign In</a>
+        </div>
+    </nav>
+
+    <main class="relative h-screen flex flex-col justify-center items-center text-center px-6">
+        <div class="float-animation max-w-4xl">
+            <h1 class="font-serif text-6xl md:text-8xl mb-6 leading-tight">Your space to <br><span class="italic">simply be.</span></h1>
+            <p class="text-xl md:text-2xl font-light text-white/70 mb-12 tracking-wide leading-relaxed">
+                An AI-powered sanctuary for mental clarity. <br> 
+                Breathe deeper, reflect clearer, and find your calm.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <button onclick="window.location.href='loginPage.html'" class="px-12 py-5 bg-white text-slate-900 rounded-full font-bold uppercase text-sm tracking-widest cta-glow transition-all duration-500 transform hover:scale-105">
+                    Start Your Journey
+                </button>
+                <button onclick="window.location.href='resources.html'" class="px-12 py-5 bg-transparent border border-white/40 rounded-full font-bold uppercase text-sm tracking-widest hover:bg-white/10 transition-all">
+                    Explore Sanctuary
+                </button>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-40 animate-bounce">
+            <div class="w-1 h-12 bg-gradient-to-b from-white to-transparent rounded-full mx-auto"></div>
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 w-full px-10 py-8 flex flex-col md:flex-row justify-between items-center bg-gradient-to-t from-slate-900/80 to-transparent">
+        <div class="text-[10px] uppercase tracking-[4px] opacity-40 mb-4 md:mb-0">
+            © 2026 MindEase Collective • Privacy in Silence
+        </div>
+        <div class="flex gap-8 text-xs font-light tracking-widest opacity-60">
+            <span>MERN STACK</span>
+            <span>GOOGLE GEMINI AI</span>
+           
+        </div>
+    </footer>
+
+</body>
+</html>

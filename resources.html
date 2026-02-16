@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relaxation Zone - MindEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.3), rgba(15, 23, 42, 0.8));
+            z-index: -1;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0; height: 100vh; width: 220px;
+            display: flex; flex-direction: column; align-items: flex-start;
+            padding: 30px 20px; z-index: 50; background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px); border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 50px; text-decoration: none; padding-left: 10px; }
+        .nav-logo { width: 40px; height: 40px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #1e293b; font-weight: bold; }
+        .brand-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: white; letter-spacing: 1px; }
+
+        .nav-icon { width: 100%; display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: rgba(255, 255, 255, 0.6); font-size: 1.3rem; margin-bottom: 10px; transition: all 0.3s; text-decoration: none; border-radius: 12px; }
+        .nav-icon span { font-family: 'Lato', sans-serif; font-size: 1rem; }
+        .nav-icon:hover, .nav-icon.active { background: rgba(255, 255, 255, 0.15); color: white; }
+
+        .main-content { margin-left: 220px; padding: 60px 80px; }
+
+        .section-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 10px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .section-subtitle { font-family: 'Lato', sans-serif; color: rgba(255,255,255,0.7); margin-bottom: 40px; }
+
+        .carousel-viewport { position: relative; width: 100%; max-width: 900px; margin: 0 auto; overflow: hidden; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .carousel-track { display: flex; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .carousel-slide { min-width: 100%; aspect-ratio: 16/9; }
+        .carousel-slide iframe { width: 100%; height: 100%; border: none; }
+
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.2); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .nav-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-50%) scale(1.1); }
+        .prev { left: 15px; } .next { right: 15px; }
+
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s; }
+        .dot.active { background: white; width: 24px; border-radius: 10px; }
+
+        .soundscape-card { background: rgba(30, 27, 75, 0.4); backdrop-filter: blur(25px); border: 1px solid rgba(165, 180, 252, 0.2); border-radius: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .music-tag { display: inline-block; padding: 4px 12px; background: rgba(165, 180, 252, 0.1); border: 1px solid rgba(165, 180, 252, 0.3); border-radius: 100px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #c7d2fe; margin-bottom: 15px; }
+
+        .visualizer-bar { width: 4px; height: 20px; background: rgba(255,255,255,0.8); border-radius: 2px; margin: 0 3px; }
+        .playing .visualizer-bar { animation: breathe 1.5s infinite ease-in-out; }
+        @keyframes breathe { 0%, 100% { height: 20px; opacity: 0.5; } 50% { height: 60px; opacity: 1; background: #a5f3fc; } }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: 70px; bottom: 0; top: auto; flex-direction: row; padding: 0 10px; }
+            .nav-brand, .nav-icon span { display: none; }
+            .nav-icon { justify-content: center; width: auto; margin-bottom: 0; }
+            .main-content { margin-left: 0; padding: 40px 20px 100px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <nav class="sidebar">
+        <a href="Welcome.html" class="nav-brand"><div class="nav-logo">M</div><span class="brand-name">MindEase</span></a>
+        <a href="Welcome.html" class="nav-icon"><i>○</i><span>Home</span></a>
+        <a href="resources.html" class="nav-icon active"><i>≋</i><span>Breath</span></a>
+        <a href="relax.html" class="nav-icon"><i>△</i><span>Relax</span></a>
+        <a href="journal.html" class="nav-icon"><i>✎</i><span>Journal</span></a>
+        <a href="location.html" class="nav-icon"><i>◇</i><span>Centres</span></a>
+        <div class="mt-auto w-full">
+            <button onclick="logout()" class="nav-icon" style="color: #fca5a5; background: transparent; border: none; cursor: pointer;"><i>✕</i><span>Logout</span></button>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div id="videos" class="mb-24">
+            <h2 class="section-title">Visual Journeys</h2>
+            <p class="section-subtitle">Immersive landscapes to quiet the mind.</p>
+            <div class="carousel-viewport">
+                <button class="nav-btn prev" onclick="moveSlide(-1)">❮</button>
+                <button class="nav-btn next" onclick="moveSlide(1)">❯</button>
+                <div class="carousel-track" id="carouselTrack">
+                    <div class="carousel-slide"><iframe src="https://www.youtube.com/embed/lFcSrYw-ARY?enablejsapi=1" class="yt-player"></iframe></div>
+                    <div class="carousel-slide"><iframe src="https://www.youtube.com/embed/inpok4MKVLM?enablejsapi=1" class="yt-player"></iframe></div>
+                    <div class="carousel-slide"><iframe src="https://www.youtube.com/embed/59fHDWDhzkY?enablejsapi=1" class="yt-player"></iframe></div>
+                </div>
+            </div>
+            <div class="flex justify-center gap-2 mt-4" id="dotContainer">
+                <div class="dot active" onclick="jumpToSlide(0)"></div>
+                <div class="dot" onclick="jumpToSlide(1)"></div>
+                <div class="dot" onclick="jumpToSlide(2)"></div>
+            </div>
+        </div>
+
+        <div id="songs" class="mb-24">
+            <h2 class="section-title">Sonic Sanctuary</h2>
+            <p class="section-subtitle">Harmonize your soul with curated frequencies.</p>
+            <div class="soundscape-card p-10 bg-indigo-950/40 backdrop-blur-2xl rounded-[40px] border border-indigo-400/20 shadow-2xl">
+                <div class="flex flex-col lg:flex-row gap-12 items-center">
+                    <div class="lg:w-1/2">
+                        <span class="music-tag">Audio Therapy</span>
+                        <h2 class="font-serif text-5xl mb-6">Soundscapes</h2>
+                        <p class="text-white/60 font-light leading-relaxed mb-8">Curated frequencies to synchronize your brainwaves. Select an atmosphere below.</p>
+                        <div class="flex flex-wrap gap-4">
+                            <button onclick="changeTrack('focus')" class="px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition text-xs uppercase tracking-widest">Focus</button>
+                            <button onclick="changeTrack('rain')" class="px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition text-xs uppercase tracking-widest">Rain</button>
+                            <button onclick="changeTrack('zen')" class="px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition text-xs uppercase tracking-widest">Zen</button>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2 w-full">
+                        <div class="relative group">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                            <iframe id="spotify-player" class="relative rounded-2xl shadow-2xl" 
+                                src="https://open.spotify.com/embed/playlist/2RJLdQ20qLpHguzri0TtBu?utm_source=generator" 
+                                width="100%" height="380" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">AI Zen Guide</h2>
+        <p class="section-subtitle">Real-time guided meditation for immediate clarity.</p>
+        <div id="ai" class="text-center p-12 bg-slate-900/40 backdrop-blur-xl rounded-[40px] border border-white/10 shadow-2xl">
+            <h2 class="section-title">Med-Guide</h2>
+            <p class="section-subtitle">guided meditation for immediate clarity.</p>
+            <div class="h-20 flex justify-center items-center mb-6" id="visualizer">
+                <div class="visualizer-bar"></div><div class="visualizer-bar"></div><div class="visualizer-bar"></div><div class="visualizer-bar"></div><div class="visualizer-bar"></div>
+            </div>
+            <button onclick="toggleMeditation()" id="speakBtn" class="px-10 py-4 bg-white text-slate-900 rounded-full font-bold uppercase tracking-widest text-sm hover:scale-105 transition-transform">▶ Begin Session</button>
+        </div>
+    </div>
+
+    <script>
+        // Existing script logic...
+        let slideIndex = 0; let carouselTimer;
+        const track = document.getElementById('carouselTrack');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = 3; let players = [];
+
+        var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        function onYouTubeIframeAPIReady() {
+            const iframes = document.querySelectorAll('.yt-player');
+            iframes.forEach((iframe, i) => {
+                players[i] = new YT.Player(iframe, {
+                    events: { 'onStateChange': (e) => {
+                        if (e.data == YT.PlayerState.PLAYING) stopCarousel();
+                        else if (e.data == YT.PlayerState.ENDED || e.data == YT.PlayerState.PAUSED) startCarousel();
+                    }}
+                });
+            });
+        }
+
+        function moveSlide(n) { slideIndex = (slideIndex + n + totalSlides) % totalSlides; updateCarouselUI(); }
+        function jumpToSlide(n) { slideIndex = n; updateCarouselUI(); }
+        function updateCarouselUI() {
+            track.style.transform = `translateX(-${slideIndex * 100}%)`;
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === slideIndex));
+        }
+        function startCarousel() { stopCarousel(); carouselTimer = setInterval(() => moveSlide(1), 5000); }
+        function stopCarousel() { clearInterval(carouselTimer); }
+        startCarousel();
+
+        function changeTrack(mood) {
+            const player = document.getElementById('spotify-player');
+            const tracks = {
+                'focus': 'https://open.spotify.com/embed/playlist/2RJLdQ20qLpHguzri0TtBu?utm_source=generator',
+                'rain': 'https://open.spotify.com/embed/artist/03eX3RX46RbMeY7FA8xF99?utm_source=generator',
+                'zen': 'https://open.spotify.com/embed/episode/0SnBLYh1aQMp0kyCsErSgy?utm_source=generator'
+            };
+            player.style.opacity = '0';
+            setTimeout(() => { player.src = tracks[mood]; player.style.opacity = '1'; }, 300);
+        }
+
+        const synth = window.speechSynthesis; let isSpeaking = false;
+        function toggleMeditation() {
+            const btn = document.getElementById('speakBtn');
+            const visualizer = document.getElementById('visualizer');
+            if (!isSpeaking) {
+                const utterance = new SpeechSynthesisUtterance("Take a deep breath in... and let it out slowly. Focus only on your breathing.");
+                utterance.onend = () => { isSpeaking = false; visualizer.classList.remove('playing'); btn.innerText = "▶ Begin Session"; };
+                synth.speak(utterance); isSpeaking = true; visualizer.classList.add('playing'); btn.innerText = "⏹ End Session";
+            } else { synth.cancel(); isSpeaking = false; visualizer.classList.remove('playing'); btn.innerText = "▶ Begin Session"; }
+        }
+
+        function logout() { localStorage.clear(); window.location.href = "loginPage.html"; }
+    </script>
+</body>
+</html>
